@@ -1,0 +1,47 @@
+stages:
+  - build
+  - test
+  - deploy
+#Définir mes variables d'environnement utilisées dans la pipeline
+variables:
+  DOCKER_DRIVER: overlay2 # Utilise le driver overlay2 pour Docker
+  #stockage Docker qui est rapide et efficace. Docker utilise
+  #différents pilotes de stockage pour gérer les images et les
+  #conteneurs de Docker sur votre système Docker
+  CONTAINER_IMAGE: registry.gitlab.com/greta_formation/correction_tp_nanasite
+  #Cette variable est utilisée pour stocker le nom de l'image
+  #Docker qui sera construite, testée et poussée vers le registre
+  #Docker dans ce pipeline CI. Le nom de l'image comprend l'URL du
+  #registre Docker (registry.gitlab.com), le nom du projet
+  #(greta_formation/correction_tp_nanasite).
+
+#Etape de construction de l'image Docker
+build:
+  stage: build # Indique que cette tâche fait partie de l'étape "build"
+  script:
+    - docker build
+
+test:
+  stage: test
+  image: php:7.4
+  script:
+    - php -l /var/www/html/index.php
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Déploiement de l'application..."
+  only:
+    - master
+
+deploy_dev:
+  stage: deploy
+  script:
+    - echo "Deploying to development environment"
+    # Add your deployment commands for development environment
+
+deploy_prod:
+  stage: deploy
+  script:
+    - echo "Deploying to production environment"
+    # Add your deployment commands for production environment
