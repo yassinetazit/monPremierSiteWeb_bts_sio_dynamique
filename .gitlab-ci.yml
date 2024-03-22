@@ -20,8 +20,9 @@ variables:
 test_unitaire:
   stage: test
   script:
-    - php -l yassinetazit/monPremierSiteWeb_bts_sio_dynamique/pages/Global/index.php # Syntax check
+    #- php -l yassinetazit/monPremierSiteWeb_bts_sio_dynamique/pages/Global/index.php # Syntax check
     # Add additional tests here, like PHPUnit tests or functional tests
+    - php -l /Users/yassinetazit/Desktop/TP-model-devOps/monPremierSiteWeb_bts_sio_dynamique/pages/Global/index.php
 
 deploy_staging:
   stage: deploy

@@ -1,52 +1,23 @@
-version: "3"
+version: "3.1"
+
 services:
-  web:
-    build: .
+  apache:
+    image: httpd:latest
     ports:
       - "80:80"
     volumes:
-      - .:/var/www/html/
+      - ./html:/usr/local/apache2/htdocs
+    depends_on:
+      - mysql
 
   mysql:
     image: mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: example
-      MYSQL_DATABASE: my_database
-      MYSQL_USER: my_user
-      MYSQL_PASSWORD: my_password
-    volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - app-network
-
-  php-apache:
-    image: php:apache
-    ports:
-      - "80:80"
-    volumes:
-      - ./src:/var/www/html
-    depends_on:
-      - mysql
-    networks:
-      - app-network
-
-  db:
-    environment:
-      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: nanasite
       MYSQL_USER: root
-      MYSQL_PASSWORD: "root"
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+      MYSQL_PASSWORD: root
     ports:
-      - "8080:80"
-    depends_on:
-      - db
-
-networks:
-  app-network:
-    driver: bridge
-
-volumes:
-  mysql_data:
+      - "3306:3306"
+    volumes:
+      - ./mysql:/var/lib/mysql
