@@ -1,5 +1,4 @@
 stages:
-  - build
   - test
   - deploy
 #Définir mes variables d'environnement utilisées dans la pipeline
@@ -14,34 +13,30 @@ variables:
   #Docker dans ce pipeline CI. Le nom de l'image comprend l'URL du
   #registre Docker (registry.gitlab.com), le nom du projet
   #(greta_formation/correction_tp_nanasite).
+  DOCKER_USERNAME: "devyass92"
+  DOCKER_PASSWORD: "DevWeb92$"
+  DOCKER_REGISTRY: devyass92/dockerwgreta
 
-#Etape de construction de l'image Docker
-build:
-  stage: build # Indique que cette tâche fait partie de l'étape "build"
-  script:
-    - docker build
-
-test:
+test_unitaire:
   stage: test
-  image: php:7.4
   script:
-    - php -l /var/www/html/index.php
+    - php -l yassinetazit/monPremierSiteWeb_bts_sio_dynamique/pages/Global/index.php # Syntax check
+    # Add additional tests here, like PHPUnit tests or functional tests
 
-deploy:
+deploy_staging:
   stage: deploy
   script:
-    - echo "Déploiement de l'application..."
-  only:
-    - master
+    - echo "Deploying to staging server..."
+    - ssh user@staging-server 'cd /path/to/deployment/directory && git pull origin master && php artisan migrate && php artisan cache:clear'
+    # Remplacez 'user' par votre nom d'utilisateur, 'staging-server' par l'adresse de votre serveur de pré-production,
+    # '/path/to/deployment/directory' par le chemin absolu de votre répertoire de déploiement,
+    # et ajoutez d'autres commandes de déploiement spécifiques à votre application.
 
-deploy_dev:
+deploy_production:
   stage: deploy
   script:
-    - echo "Deploying to development environment"
-    # Add your deployment commands for development environment
-
-deploy_prod:
-  stage: deploy
-  script:
-    - echo "Deploying to production environment"
-    # Add your deployment commands for production environment
+    - echo "Deploying to production server..."
+    - ssh user@production-server 'cd /path/to/deployment/directory && git pull origin master && php artisan migrate && php artisan cache:clear && php artisan optimize && supervisorctl restart all'
+    # Remplacez 'user' par votre nom d'utilisateur, 'production-server' par l'adresse de votre serveur de production,
+    # '/path/to/deployment/directory' par le chemin absolu de votre répertoire de déploiement,
+    # et ajoutez d'autres commandes de déploiement spécifiques à votre application.
